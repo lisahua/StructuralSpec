@@ -8,4 +8,6 @@ public class ConfigUtility {
 	public static final String codeQueryAPI = codeSearchPortal+"result/";
 	public static final String charset = "UTF-8";
 	public static final String language = "&lan=23";
+	public static final int resultNumber = 10;
+	public static final String codeOutputPath = "test-output/resource/tmp/";
 }

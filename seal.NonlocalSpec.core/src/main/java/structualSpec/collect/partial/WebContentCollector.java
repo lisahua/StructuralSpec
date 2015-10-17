@@ -17,11 +17,11 @@ public class WebContentCollector implements IWebContentCollector{
 	public Object sendQuery(String query) {
 
 		// String query = "undo JHotdraw";
-		String address = ConfigUtility.codeSearchPortal + query + ConfigUtility.language;
-		
+		String address = ConfigUtility.queryAPI + query + ConfigUtility.language;
+		System.out.println(address);
 		URL url;
 		try {
-			url = new URL(address + URLEncoder.encode(query, ConfigUtility.charset));
+			url = new URL(address);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
 					url.openStream(), ConfigUtility.charset));
 			
