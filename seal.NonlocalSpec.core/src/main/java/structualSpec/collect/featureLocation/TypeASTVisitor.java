@@ -1,6 +1,6 @@
-package structualSpec.syntactic.parser;
+package structualSpec.collect.featureLocation;
 
-import java.io.PrintWriter;
+import java.util.ArrayList;
 
 import org.eclipse.jdt.core.dom.ASTNode;
 import org.eclipse.jdt.core.dom.ASTVisitor;
@@ -13,55 +13,45 @@ import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
 import org.eclipse.jdt.core.dom.ParenthesizedExpression;
-import org.eclipse.jdt.core.dom.Type;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclarationExpression;
 
-public class NameASTVisitor extends ASTVisitor {
-
-	PrintWriter writer;
-
-	public NameASTVisitor(PrintWriter writer) {
-		this.writer = writer;
-	}
+ class TypeASTVisitor extends ASTVisitor {
+	private ArrayList<TypeDeclaration> classes = new ArrayList<TypeDeclaration>();
 
 	public boolean visit(TypeDeclaration decl) {
-
-		String itf = "";
-		for (Object d : decl.superInterfaceTypes()) {
-			itf += d + ",";
-		}
-		// System.out.println(decl.getSuperclassType());
-		writer.println("t," + decl.getName() + "," + decl.getSuperclassType()
-				+ "," + itf);
+		classes.add(decl);
 		return true;
 	}
+}
+ class MethodASTVisitor extends ASTVisitor {
+	 private ArrayList<MethodDeclaration> methods = new ArrayList<MethodDeclaration>();
+	 private ArrayList<FieldDeclaration> fields = new ArrayList<FieldDeclaration>();
 
 	public boolean visit(MethodDeclaration mtd) {
-		String param = "";
-		for (Object d : mtd.parameters())
-			param += d + ",";
-		Type ret = mtd.getReturnType2();
-		String retur = (ret == null) ? "" : ret.toString();
-		writer.println(" m," + mtd.getName() + "," + param + "," + retur);
+		methods.add(mtd);
 		return true;
 	}
-
+	public boolean visit(FieldDeclaration field) {
+		fields.add(field);
+		return true;
+	}
+ }
+ 
+ class ExpressionVisitor extends ASTVisitor {
+	 
 	public boolean visit(MethodInvocation invoke) {
 		String arg = "";
 		for (Object a : invoke.arguments())
 			arg += parseExpression((Expression) a) + ",";
-		writer.println("  k," + parseExpression(invoke.getExpression()) + ","
-				+ invoke.getName() + "," + arg);
 		return true;
 	}
 
 	public boolean visit(FieldDeclaration field) {
 		String arg = "";
 		for (Object o : field.fragments()) {
-			arg += o.toString().split("=")[0] ;
+			arg += o.toString().split("=")[0];
 		}
-		writer.println(" f," + arg);
 		return true;
 	}
 

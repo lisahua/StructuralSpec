@@ -33,26 +33,8 @@ public class TestJsonResult {
 
 	@Test
 	public void testWriteCode() {
-		try {
-			FileUtils.cleanDirectory(new File(ConfigUtility.codeOutputPath));
-		} catch (IOException e) {
-		}
 		JsonQueryResult result = (JsonQueryResult) WebContentCollector
 				.getInstance().sendQuery("undo+redo+TextEditor");
-		ResultItem[] resultTerms = result.getResults();
-		HashMap<String, ResultItem> map = new HashMap<String, ResultItem>();
-
-		for (int i = 0; i < resultTerms.length; i++) {
-
-			map.put(resultTerms[i].getFilename(), resultTerms[i]);
-		}
-		int count = 0;
-		for (ResultItem item : map.values()) {
-			if (count > ConfigUtility.NUM_RESULT)
-				break;
-			SourceCodeCollector.getInstance().writeDownFile(
-					String.valueOf(item.getId()), item.getFilename());
-			count++;
-		}
+		SourceCodeCollector.getInstance().writeDownQueryResult(result);
 	}
 }

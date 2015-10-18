@@ -1,10 +1,15 @@
 package structualSpec.collect.partial;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.util.HashMap;
+
+import org.apache.commons.io.FileUtils;
 
 import structualSpec.config.ConfigUtility;
 
@@ -23,7 +28,7 @@ public class SourceCodeCollector implements IWebContentCollector {
 			url = new URL(address);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
 					url.openStream(), ConfigUtility.charset));
-			
+
 			return JsonUnMarshaller.getInstance().readJsonSourceCode(reader);
 
 		} catch (Exception e) {
@@ -44,4 +49,43 @@ public class SourceCodeCollector implements IWebContentCollector {
 		}
 	}
 
+	public void writeDownQueryResult(JsonQueryResult result) {
+		try {
+			FileUtils.cleanDirectory(new File(ConfigUtility.codeOutputPath));
+		} catch (IOException e) {
+		}
+		ResultItem[] resultTerms = result.getResults();
+		HashMap<String, ResultItem> map = new HashMap<String, ResultItem>();
+
+		for (int i = 0; i < resultTerms.length; i++) {
+			map.put(resultTerms[i].getFilename(), resultTerms[i]);
+		}
+		int count = 0;
+		for (ResultItem item : map.values()) {
+			if (count > ConfigUtility.NUM_RESULT)
+				break;
+			writeDownFile(String.valueOf(item.getId()), item.getFilename());
+			count++;
+		}
+	}
+
+	public String[] getStringsFromQuery(JsonQueryResult result) {
+		ResultItem[] resultTerms = result.getResults();
+		HashMap<String, ResultItem> map = new HashMap<String, ResultItem>();
+		String[] codes = new String[ConfigUtility.NUM_RESULT];
+		for (int i = 0; i < resultTerms.length; i++) {
+			map.put(resultTerms[i].getFilename(), resultTerms[i]);
+		}
+		int count = 0;
+		for (ResultItem item : map.values()) {
+			if (count > ConfigUtility.NUM_RESULT)
+				break;
+			
+			JsonSourceCode code = (JsonSourceCode) sendQuery(String
+					.valueOf(item.getId()));
+			codes[count]=code.getCode();
+			count++;
+		}
+		return codes;
+	}
 }

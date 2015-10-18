@@ -46,8 +46,8 @@ public class SimpleNamePrinter {
 			parser.setKind(ASTParser.K_COMPILATION_UNIT);
 			final CompilationUnit cu = (CompilationUnit) parser.createAST(null);
 
-			NameASTVisitor mdVisitor = new NameASTVisitor(writer);
-			cu.accept(mdVisitor);
+//			PartialASTVisitor mdVisitor = new PartialASTVisitor(writer);
+//			cu.accept(mdVisitor);
 
 		} catch (IOException e) {
 			e.printStackTrace();
