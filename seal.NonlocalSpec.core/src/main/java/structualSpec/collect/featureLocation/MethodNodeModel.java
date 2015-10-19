@@ -17,6 +17,7 @@ public class MethodNodeModel {
 
 	public void insertMethodFacts(FactObject fact) {
 		facts.add(fact);
+		System.out.println(fact.getFact()+"("+fact+")");
 	}
 
 	public void insertSymbolTable(String name, String type) {

@@ -7,6 +7,7 @@ import org.apache.commons.io.FileUtils;
 import org.testng.annotations.Test;
 
 import structualSpec.collect.featureLocation.CodeExampleModel;
+import structualSpec.collect.featureLocation.QueryTermSubscriber;
 import structualSpec.collect.partial.JsonQueryResult;
 import structualSpec.collect.partial.JsonSourceCode;
 import structualSpec.collect.partial.ResultItem;
@@ -39,6 +40,7 @@ public class TestJsonResult {
 
 	@Test
 	public void testASTParser() {
+		QueryTermSubscriber.getInstance().setQueryTerms("undo redo TextEditor");
 		File[] dir = new File(ConfigUtility.codeOutputPath).listFiles();
 		String code="";
 		try {

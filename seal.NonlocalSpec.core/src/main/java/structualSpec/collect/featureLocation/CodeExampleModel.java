@@ -1,7 +1,6 @@
 package structualSpec.collect.featureLocation;
 
 import java.util.HashMap;
-import java.util.HashSet;
 
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 

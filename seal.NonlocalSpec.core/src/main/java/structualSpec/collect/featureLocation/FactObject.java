@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class FactObject {
 	ArrayList<String> property = new ArrayList<String>();
 	FACT fact;
-	boolean hasKeyword = false;
+	int numKeyword = 0;
 	String s = "";
 
 	public FactObject(FACT fact, String... args) {
@@ -16,13 +16,16 @@ public class FactObject {
 		}
 	}
 
-	public boolean isHasKeyword() {
-		return hasKeyword;
+
+	public int getNumKeyword() {
+		return numKeyword;
 	}
 
-	public void setHasKeyword(boolean hasKeyword) {
-		this.hasKeyword = hasKeyword;
+
+	public void setNumKeyword(int numKeyword) {
+		this.numKeyword = numKeyword;
 	}
+
 
 	public ArrayList<String> getProperty() {
 		return property;

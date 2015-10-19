@@ -10,6 +10,8 @@ import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
+import structualSpec.syntactic.parser.TypeASTVisitor;
+
 public class QueryStringParser {
 	
 	

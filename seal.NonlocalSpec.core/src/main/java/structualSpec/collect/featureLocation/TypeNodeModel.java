@@ -17,6 +17,7 @@ public class TypeNodeModel {
 
 	public void insertFieldFacts(FactObject fact) {
 		fields.add(fact);
+		System.out.println(fact.getFact()+"("+fact+")");
 	}
 
 	public void insertMethodFacts(MethodNodeModel mNode) {
