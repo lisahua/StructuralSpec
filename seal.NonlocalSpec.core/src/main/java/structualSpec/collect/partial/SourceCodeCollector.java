@@ -13,14 +13,14 @@ import org.apache.commons.io.FileUtils;
 
 import structualSpec.config.ConfigUtility;
 
-public class SourceCodeCollector implements IWebContentCollector {
-	private static SourceCodeCollector collector = new SourceCodeCollector();
+public class SourceCodeCollector  {
+//	private static SourceCodeCollector collector = new SourceCodeCollector();
+//
+//	public static SourceCodeCollector getInstance() {
+//		return collector;
+//	}
 
-	public static SourceCodeCollector getInstance() {
-		return collector;
-	}
-
-	public Object sendQuery(String query) {
+	public static Object sendQuery(String query) {
 		String address = ConfigUtility.codeQueryAPI + query + "/";
 		System.out.println(address);
 		URL url;
@@ -37,7 +37,7 @@ public class SourceCodeCollector implements IWebContentCollector {
 		return null;
 	}
 
-	public void writeDownFile(String query, String fileName) {
+	public static void writeDownFile(String query, String fileName) {
 		JsonSourceCode code = (JsonSourceCode) sendQuery(query);
 		PrintWriter writer;
 		try {
@@ -49,7 +49,7 @@ public class SourceCodeCollector implements IWebContentCollector {
 		}
 	}
 
-	public void writeDownQueryResult(JsonQueryResult result) {
+	public static void writeDownQueryResult(JsonQueryResult result) {
 		try {
 			FileUtils.cleanDirectory(new File(ConfigUtility.codeOutputPath));
 		} catch (IOException e) {
@@ -69,7 +69,7 @@ public class SourceCodeCollector implements IWebContentCollector {
 		}
 	}
 
-	public String[] getStringsFromQuery(JsonQueryResult result) {
+	public static String[] getStringsFromQuery(JsonQueryResult result) {
 		ResultItem[] resultTerms = result.getResults();
 		HashMap<String, ResultItem> map = new HashMap<String, ResultItem>();
 		String[] codes = new String[ConfigUtility.NUM_RESULT];
