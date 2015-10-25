@@ -38,4 +38,13 @@ public class CamelCaseSplitter {
 			splitted += token + " ";
 		return splitted.trim();
 	}
+	
+	public String executeSingleLine(String line) {
+		String[] tokens = line.toLowerCase().split(" ");
+		String output = "";
+		for (String token: tokens) {
+			output += executeSingleName(token)+" "; 
+		}
+		return output;
+	}
 }

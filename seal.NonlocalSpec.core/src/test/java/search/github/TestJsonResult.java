@@ -4,45 +4,33 @@ import java.io.File;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
+import org.eclipse.jdt.core.dom.AST;
+import org.eclipse.jdt.core.dom.ASTParser;
+import org.eclipse.jdt.core.dom.CompilationUnit;
 import org.testng.annotations.Test;
 
 import structualSpec.collect.featureLocation.CodeExampleModel;
 import structualSpec.collect.featureLocation.QueryTermSubscriber;
+import structualSpec.collect.featureLocation.ir.IRASTVisitor;
 import structualSpec.collect.partial.JsonQueryResult;
-import structualSpec.collect.partial.JsonSourceCode;
-import structualSpec.collect.partial.ResultItem;
 import structualSpec.collect.partial.SourceCodeCollector;
 import structualSpec.collect.partial.WebContentCollector;
 import structualSpec.config.ConfigUtility;
 
 public class TestJsonResult {
-	// @Test
-	public void testQuery() {
-		WebContentCollector.sendQuery("undo+redo+TextEditor");
-	}
-
-	// @Test
-	public void testParseSourceCode() {
-		JsonQueryResult result = (JsonQueryResult) WebContentCollector
-				.sendQuery("undo+redo+TextEditor");
-		ResultItem[] resultTerms = result.getResults();
-		JsonSourceCode code = (JsonSourceCode) SourceCodeCollector
-				.sendQuery(String.valueOf(resultTerms[0].getId()));
-		System.out.println(code.getCode());
-	}
 
 	// @Test
 	public void testWriteCode() {
-		JsonQueryResult result = (JsonQueryResult) WebContentCollector
-				.sendQuery("undo+redo+TextEditor");
+		JsonQueryResult[] result = WebContentCollector
+				.queryForAllResults("undo+redo+TextEditor");
 		SourceCodeCollector.writeDownQueryResult(result);
 	}
 
-	@Test
+	// @Test
 	public void testASTParser() {
 		QueryTermSubscriber.getInstance().setQueryTerms("undo redo TextEditor");
 		File[] dir = new File(ConfigUtility.codeOutputPath).listFiles();
-		String code="";
+		String code = "";
 		try {
 			code = FileUtils.readFileToString(dir[0]);
 		} catch (IOException e) {
@@ -50,6 +38,27 @@ public class TestJsonResult {
 			e.printStackTrace();
 		}
 		CodeExampleModel example = new CodeExampleModel(code);
-		
+
+	}
+
+	@Test
+	public void testIR() {
+
+		ASTParser parser = ASTParser.newParser(AST.JLS3);
+		String fileString = null;
+		try {
+			fileString = FileUtils.readFileToString(new File(
+					ConfigUtility.codeOutputPath + "MisoScenePanel.java"));
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		parser.setSource(fileString.toCharArray());
+		parser.setKind(ASTParser.K_COMPILATION_UNIT);
+		final CompilationUnit cu = (CompilationUnit) parser.createAST(null);
+
+		IRASTVisitor extractor = new IRASTVisitor();
+		cu.accept(extractor);
+		System.out.println(extractor.getString());
 	}
 }

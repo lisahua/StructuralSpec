@@ -18,23 +18,16 @@ public class JsonUnMarshaller {
 
 	public JsonQueryResult readJsonQueryResult(BufferedReader reader) {
 		try {
-		
-			JsonQueryResult result = mapper.readValue(reader, JsonQueryResult.class);
-			for (ResultItem item:result.getResults()) {
-				System.out.println(item.getId()+","+item.getFilename());
-			}
-			return result;
+			return mapper.readValue(reader, JsonQueryResult.class);
 		} catch (Exception e) {
 			System.out.println("Search Result: null");
 		}
 		return null;
 	}
 	
-	public JsonSourceCode readJsonSourceCode(BufferedReader reader) {
-		try {
-			
-			JsonSourceCode code = mapper.readValue(reader, JsonSourceCode.class);
-			return code;
+	public JsonCode readJsonSourceCode(BufferedReader reader) {
+		try {	
+		return mapper.readValue(reader, JsonCode.class);
 		} catch (Exception e) {
 			System.out.println("Search Code: null");
 		}

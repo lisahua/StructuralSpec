@@ -8,21 +8,23 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import org.apache.commons.io.FileUtils;
 
 import structualSpec.config.ConfigUtility;
 
-public class SourceCodeCollector  {
-//	private static SourceCodeCollector collector = new SourceCodeCollector();
-//
-//	public static SourceCodeCollector getInstance() {
-//		return collector;
-//	}
+public class SourceCodeCollector {
+	// private static SourceCodeCollector collector = new SourceCodeCollector();
+	//
+	// public static SourceCodeCollector getInstance() {
+	// return collector;
+	// }
 
-	public static Object sendQuery(String query) {
+	public static JsonCode sendQuery(String query) {
 		String address = ConfigUtility.codeQueryAPI + query + "/";
-		System.out.println(address);
 		URL url;
 		try {
 			url = new URL(address);
@@ -37,55 +39,61 @@ public class SourceCodeCollector  {
 		return null;
 	}
 
-	public static void writeDownFile(String query, String fileName) {
-		JsonSourceCode code = (JsonSourceCode) sendQuery(query);
+	public static void writeDownFile(JsonSourceCode code) {
 		PrintWriter writer;
 		try {
-			writer = new PrintWriter(ConfigUtility.codeOutputPath + fileName);
-			writer.println(code.getCode());
+			writer = new PrintWriter(ConfigUtility.codeOutputPath
+					+ code.getFileName());
+			JsonCode codeQResult = sendQuery(String.valueOf(code.getId()));
+			if (codeQResult != null)
+				writer.println(codeQResult.getCode());
 			writer.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public static void writeDownQueryResult(JsonQueryResult result) {
+	public static void writeDownQueryResult(JsonQueryResult[] result) {
 		try {
 			FileUtils.cleanDirectory(new File(ConfigUtility.codeOutputPath));
 		} catch (IOException e) {
 		}
-		ResultItem[] resultTerms = result.getResults();
-		HashMap<String, ResultItem> map = new HashMap<String, ResultItem>();
-
-		for (int i = 0; i < resultTerms.length; i++) {
-			map.put(resultTerms[i].getFilename(), resultTerms[i]);
-		}
-		int count = 0;
-		for (ResultItem item : map.values()) {
-			if (count > ConfigUtility.NUM_RESULT)
-				break;
-			writeDownFile(String.valueOf(item.getId()), item.getFilename());
-			count++;
-		}
+		Queue<JsonSourceCode> codeQueue = filterIdenticalFiles(result);
+		for (JsonSourceCode code : codeQueue)
+			writeDownFile(code);
 	}
 
-	public static String[] getStringsFromQuery(JsonQueryResult result) {
-		ResultItem[] resultTerms = result.getResults();
-		HashMap<String, ResultItem> map = new HashMap<String, ResultItem>();
-		String[] codes = new String[ConfigUtility.NUM_RESULT];
-		for (int i = 0; i < resultTerms.length; i++) {
-			map.put(resultTerms[i].getFilename(), resultTerms[i]);
+	public static Queue<String> getStringsFromQuery(JsonQueryResult[] result) {
+		Queue<JsonSourceCode> queue = filterIdenticalFiles(result);
+		Queue<String> resultString = new LinkedList<String>();
+		for (JsonSourceCode item : queue) {
+			JsonCode code = sendQuery(String.valueOf(item.getId()));
+			resultString.add(code.getCode());
 		}
-		int count = 0;
-		for (ResultItem item : map.values()) {
-			if (count > ConfigUtility.NUM_RESULT)
-				break;
-			
-			JsonSourceCode code = (JsonSourceCode) sendQuery(String
-					.valueOf(item.getId()));
-			codes[count]=code.getCode();
-			count++;
-		}
-		return codes;
+		return resultString;
 	}
+
+	public static Queue<JsonSourceCode> filterIdenticalFiles(
+			JsonQueryResult[] result) {
+		HashSet<String> nameSet = new HashSet<String>();
+		Queue<JsonSourceCode> itemQueue = new LinkedList<JsonSourceCode>();
+		for (JsonQueryResult qRes : result) {
+			if (qRes == null)
+				continue;
+			for (ResultItem item : qRes.getResults()) {
+				if (nameSet.contains(item.getFilename()))
+					continue;
+				if (nameSet.size() >= ConfigUtility.NUM_RESULT)
+					break;
+				nameSet.add(item.getFilename());
+				itemQueue.add(new JsonSourceCode(item.getId(), item
+						.getFilename()));
+			}
+		}
+
+		System.out.println("  & " + result[0].getTotal() + " & "
+				+ itemQueue.size() + "&" + WebQueryTimer.end());
+		return itemQueue;
+	}
+
 }

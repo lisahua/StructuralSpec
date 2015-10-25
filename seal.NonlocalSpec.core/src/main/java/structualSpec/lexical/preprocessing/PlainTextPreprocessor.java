@@ -1,35 +1,33 @@
 package structualSpec.lexical.preprocessing;
 
+import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
+import java.io.FileReader;
+import java.io.PrintWriter;
 
-import org.apache.commons.io.FileUtils;
+import structualSpec.config.ConfigUtility;
 
-import structualSpec.syntactic.parser.SimpleNamePrinter;
+public class PlainTextPreprocessor {
+	static CamelCaseSplitter splitter = CamelCaseSplitter.getInstance();
 
-public class PlainTextPreprocessor extends SimpleNamePrinter {
-CamelCaseSplitter splitter = CamelCaseSplitter.getInstance();
-	public PlainTextPreprocessor(String outputPath) {
-		super(outputPath);
-	}
+	public static void parseToIRInput() throws Exception {
+		// String codeDir = ConfigUtility.codeOutputPath;
+		// String irDir = ConfigUtility.irOutputPath;
 
-	public void getNameInFile(File file) {
-		String fileString = null;
-		String filePath = file.getAbsolutePath();
-		try {
-			fileString = FileUtils.readFileToString(file);
-			fileString = fileString.substring(fileString
-					.indexOf("public class ") + 12);
-			String[] tokens = fileString.split("\\W");
-			for (String token : tokens) {
-				if (token.trim().length() > 1) {
-					String[] splitted = splitter.executeSingleName(token);
-					for (String t: splitted)
-						writer.print(t+" ");
-				}
+		File codeDir = new File(ConfigUtility.codeOutputPath);
+		if (!codeDir.isDirectory())
+			return;
+		File[] fileList = codeDir.listFiles();
+		PrintWriter writer = null;
+		BufferedReader reader = null;
+		String line = "";
+		for (File file : fileList) {
+			writer = new PrintWriter(ConfigUtility.irOutputPath
+					+ file.getName());
+			reader = new BufferedReader(new FileReader(file));
+			while ((line= reader.readLine())!=null) {
+				writer.println(splitter.executeSingleLine(line));
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 

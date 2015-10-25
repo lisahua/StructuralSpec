@@ -1,14 +1,28 @@
 package structualSpec.collect.partial;
 
 public class JsonSourceCode {
-	private String code;
+	private String fileName;
+	private long id = 0;
 
-	public String getCode() {
-		return code;
+	public JsonSourceCode (long id,String fileName) {
+		this.id = id;
+		this.fileName = fileName;
 	}
 
-	public void setCode(String code) {
-		this.code = code;
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
 	}
 
 }

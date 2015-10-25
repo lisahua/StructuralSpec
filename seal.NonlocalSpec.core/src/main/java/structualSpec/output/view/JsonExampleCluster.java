@@ -1,17 +1,24 @@
 package structualSpec.output.view;
 
-import org.eclipse.jdt.core.dom.AST;
 
 public class JsonExampleCluster {
-	
-	
-	public JsonExampleCluster() {}
-	
-	public JsonExampleCluster(String query) {
-		
+	private String query;
+	private JsonExampleModel[] clusters;
+
+	public String getQuery() {
+		return query;
 	}
-	public JsonExampleCluster(AST ast) {
-		
+
+	public void setQuery(String query) {
+		this.query = query;
 	}
-	
+
+	public JsonExampleModel[] getClusters() {
+		return clusters;
+	}
+
+	public void setClusters(JsonExampleModel[] clusters) {
+		this.clusters = clusters;
+	}
+
 }
