@@ -1,46 +1,26 @@
 package structualSpec.collect.featureLocation.ir;
 
 import org.eclipse.jdt.core.dom.ASTVisitor;
-import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.MethodInvocation;
-import org.eclipse.jdt.core.dom.TypeDeclaration;
 import org.eclipse.jdt.core.dom.VariableDeclaration;
 
 import structualSpec.config.ConfigUtility;
 import structualSpec.lexical.preprocessing.CamelCaseSplitter;
 
-public class IRASTVisitor extends ASTVisitor {
+public class IRMethodVisitor extends ASTVisitor {
 	StringBuilder builder = new StringBuilder();
 	String[] winnow = ConfigUtility.winnowKW;
 	CamelCaseSplitter splitter = CamelCaseSplitter.getInstance();
 
-	public boolean visit(TypeDeclaration type) {
-		builder.append(type.getName().toString() + " ");
-		for (Object o : type.typeParameters())
-			builder.append(o.toString() + " ");
-		for (Object o : type.superInterfaceTypes())
-			builder.append(o.toString() + " ");
-		builder.append(type.getSuperclassType() == null ? "" : type
-				.getSuperclassType() + " ");
-		return true;
-	}
-
 	public boolean visit(MethodDeclaration method) {
+		if (builder.length() != 0)
+			builder.append("$$");
 		builder.append(method.getName().toString() + " ");
 		for (Object o : method.parameters())
 			builder.append(o.toString() + " ");
 		builder.append(method.getReturnType2() == null ? "" : method
 				.getReturnType2() + " ");
-		return true;
-	}
-
-	public boolean visit(FieldDeclaration field) {
-		for (Object o : field.fragments()) {
-			if (o.equals("="))
-				break;
-			builder.append(o.toString().split("=")[0] + " ");
-		}
 		return true;
 	}
 
@@ -66,10 +46,10 @@ public class IRASTVisitor extends ASTVisitor {
 		String file = builder.toString();
 		for (String s : winnow)
 			file = file.replace(s, "");
-	file=	file.replaceAll("\\.", " ");
+		file = file.replaceAll("\\.", " ");
 		builder = new StringBuilder();
-		for (String token: file.split(" ")) {
-			builder.append(splitter.splitSingleName(token)+" ");
+		for (String token : file.split(" ")) {
+			builder.append(splitter.splitSingleName(token) + " ");
 		}
 		return builder;
 	}

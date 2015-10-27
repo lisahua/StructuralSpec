@@ -12,6 +12,8 @@ import org.testng.annotations.Test;
 import structualSpec.collect.featureLocation.CodeExampleModel;
 import structualSpec.collect.featureLocation.QueryTermSubscriber;
 import structualSpec.collect.featureLocation.ir.IRASTVisitor;
+import structualSpec.collect.featureLocation.ir.IRExtractor;
+import structualSpec.collect.featureLocation.ir.IRExtractorMethodStrategy;
 import structualSpec.collect.partial.JsonQueryResult;
 import structualSpec.collect.partial.SourceCodeCollector;
 import structualSpec.collect.partial.WebContentCollector;
@@ -41,7 +43,7 @@ public class TestJsonResult {
 
 	}
 
-	@Test
+	// @Test
 	public void testIR() {
 
 		ASTParser parser = ASTParser.newParser(AST.JLS3);
@@ -61,4 +63,11 @@ public class TestJsonResult {
 		cu.accept(extractor);
 		System.out.println(extractor.getString());
 	}
+
+	@Test
+	public void testIRConvertor() {
+		IRExtractor extractor = new IRExtractor();
+		extractor.setStrategy(new IRExtractorMethodStrategy());
+	}
+
 }

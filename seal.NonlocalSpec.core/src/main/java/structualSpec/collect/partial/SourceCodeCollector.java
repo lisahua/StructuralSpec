@@ -39,10 +39,10 @@ public class SourceCodeCollector {
 		return null;
 	}
 
-	public static void writeDownFile(JsonSourceCode code) {
+	public static void writeDownFile(JsonSourceCode code, int count) {
 		PrintWriter writer;
 		try {
-			writer = new PrintWriter(ConfigUtility.codeOutputPath
+			writer = new PrintWriter(ConfigUtility.codeOutputPath + count + "_"
 					+ code.getFileName());
 			JsonCode codeQResult = sendQuery(String.valueOf(code.getId()));
 			if (codeQResult != null)
@@ -59,8 +59,9 @@ public class SourceCodeCollector {
 		} catch (IOException e) {
 		}
 		Queue<JsonSourceCode> codeQueue = filterIdenticalFiles(result);
+		int count = 0;
 		for (JsonSourceCode code : codeQueue)
-			writeDownFile(code);
+			writeDownFile(code, count++);
 	}
 
 	public static Queue<String> getStringsFromQuery(JsonQueryResult[] result) {
@@ -77,6 +78,7 @@ public class SourceCodeCollector {
 			JsonQueryResult[] result) {
 		HashSet<String> nameSet = new HashSet<String>();
 		Queue<JsonSourceCode> itemQueue = new LinkedList<JsonSourceCode>();
+		int totalLOC = 0;
 		for (JsonQueryResult qRes : result) {
 			if (qRes == null)
 				continue;
@@ -88,12 +90,16 @@ public class SourceCodeCollector {
 				nameSet.add(item.getFilename());
 				itemQueue.add(new JsonSourceCode(item.getId(), item
 						.getFilename()));
+				totalLOC += item.getLinescount();
 			}
 		}
-
-		System.out.println("  & " + result[0].getTotal() + " & "
-				+ itemQueue.size() + "&" + WebQueryTimer.end());
+		if (itemQueue.size() > 0)
+			// System.out.println("  & " + result[0].getTotal() + " & "
+			// + itemQueue.size() + "&" + totalLOC / itemQueue.size()
+			// + "&" + WebQueryTimer.end());
+			System.out.println("  & " + +itemQueue.size() + "&"
+					+ WebQueryTimer.end() + "&" + totalLOC / itemQueue.size()
+					+ " & 7 &" + totalLOC / itemQueue.size() / 10 + " & 7 \\\\");
 		return itemQueue;
 	}
-
 }

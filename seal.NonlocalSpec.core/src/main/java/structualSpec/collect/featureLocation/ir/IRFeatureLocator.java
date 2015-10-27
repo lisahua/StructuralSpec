@@ -1,9 +1,13 @@
-package structualSpec.collect.featureLocation;
+package structualSpec.collect.featureLocation.ir;
 
 import java.util.HashSet;
 
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
+import structualSpec.collect.featureLocation.FactObject;
+import structualSpec.collect.featureLocation.MethodNodeModel;
+import structualSpec.collect.featureLocation.QueryTermSubscriber;
+import structualSpec.collect.featureLocation.TypeNodeModel;
 import structualSpec.syntactic.parser.MethodASTVisitor;
 
 public class IRFeatureLocator {

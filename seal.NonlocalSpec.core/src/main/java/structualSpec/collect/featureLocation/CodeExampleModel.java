@@ -4,6 +4,8 @@ import java.util.HashMap;
 
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
+import structualSpec.collect.featureLocation.ir.IRFeatureLocator;
+
 public class CodeExampleModel {
 	private HashMap<TypeDeclaration, TypeNodeModel> example = new HashMap<TypeDeclaration, TypeNodeModel>();
 	private int clusterNum;
