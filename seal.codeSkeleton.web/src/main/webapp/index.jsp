@@ -22,10 +22,6 @@
 <script src="js/jquery.nouislider.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/typeahead.bundle.min.js"></script>
-
-<!--  <link rel="search" type="application/opensearchdescription+xml"
-	title="searchcode"
-	href="https://addons.mozilla.org/firefox/downloads/latest/570226/addon-570226-latest.xml"> -->
 </head>
 <body>
 

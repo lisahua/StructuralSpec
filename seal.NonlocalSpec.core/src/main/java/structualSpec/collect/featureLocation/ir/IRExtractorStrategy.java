@@ -1,7 +1,6 @@
 package structualSpec.collect.featureLocation.ir;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 
 import org.apache.commons.io.FileUtils;
@@ -24,13 +23,21 @@ public abstract class IRExtractorStrategy {
 		File codeDir = new File(ConfigUtility.codeOutputPath);
 		if (!codeDir.isDirectory())
 			return null;
-		 return codeDir.listFiles();
+		return codeDir.listFiles();
 
 	}
 
 	public abstract StringBuilder setFileString(CompilationUnit cu);
 
 	public abstract void traverseToIRFile(File[] inputs);
+
+	public StringBuilder[] retrieveAllIRInfo(File[] inputs) {
+		int len = inputs.length;
+		StringBuilder[] sbList = new StringBuilder[len];
+		for (int i = 0; i < len; i++)
+			sbList[i] = setFileString(inputs[i]);
+		return sbList;
+	}
 
 	public StringBuilder setFileString(File code) {
 		String fileString = "";

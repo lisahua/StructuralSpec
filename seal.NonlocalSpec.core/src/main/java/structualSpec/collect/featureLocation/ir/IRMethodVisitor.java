@@ -53,4 +53,8 @@ public class IRMethodVisitor extends ASTVisitor {
 		}
 		return builder;
 	}
+
+	public String[] getAllMethods() {
+		return getString().toString().split("\\$\\$");
+	}
 }

@@ -86,4 +86,8 @@ public class IRExtractor {
 	public void setStrategy(IRExtractorStrategy strategy) {
 		strategy.traverseToIRFile(strategy.retrieveInputFiles());
 	}
+	
+	public StringBuilder[] retrieveAllExamples(IRExtractorStrategy strategy) {
+		return strategy.retrieveAllIRInfo(strategy.retrieveInputFiles());
+	}
 }

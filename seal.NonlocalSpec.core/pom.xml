@@ -28,6 +28,12 @@
   <artifactId>semanticvectors</artifactId>
   <version>5.8</version>
 </dependency>
+<dependency>
+    <groupId>edu.ucla.sspace</groupId>
+    <artifactId>sspace</artifactId>
+    <version>2.0.4</version>
+</dependency>
+
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>

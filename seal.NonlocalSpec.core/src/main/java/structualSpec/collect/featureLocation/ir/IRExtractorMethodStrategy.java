@@ -18,6 +18,8 @@ public class IRExtractorMethodStrategy extends IRExtractorStrategy {
 		cu.accept(extractor);
 		return extractor.getString();
 	}
+	
+	
 
 	@Override
 	public void traverseToIRFile(File[] inputs) {
@@ -42,5 +44,7 @@ public class IRExtractorMethodStrategy extends IRExtractorStrategy {
 			}
 		}
 	}
+
+	
 
 }

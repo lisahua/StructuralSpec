@@ -39,4 +39,10 @@ public class IRExtractorClassStrategy extends IRExtractorStrategy {
 
 	}
 
+	@Override
+	public StringBuilder[] retrieveAllIRInfo(File[] inputs) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

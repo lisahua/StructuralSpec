@@ -24,7 +24,7 @@ public class TestJsonResult {
 	// @Test
 	public void testWriteCode() {
 		JsonQueryResult[] result = WebContentCollector
-				.queryForAllResults("undo+redo+TextEditor");
+				.queryForAllResults("track+mouse+hover");
 		SourceCodeCollector.writeDownQueryResult(result);
 	}
 
