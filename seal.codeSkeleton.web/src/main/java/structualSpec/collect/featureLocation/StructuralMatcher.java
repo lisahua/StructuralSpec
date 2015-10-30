@@ -30,6 +30,10 @@ public class StructuralMatcher {
 		}
 		setClusterNumber();
 	}
+	
+	public void addExample (String code) {
+		examples.add(new CodeExampleModel(code));
+	}
 	public void setFromDir(String dir) {
 		File[] files = new File(ConfigUtility.codeOutputPath).listFiles();
 		String[] fileS = new String[files.length];
@@ -41,7 +45,7 @@ public class StructuralMatcher {
 			}
 		setExamples(fileS);
 	}
-	private void setClusterNumber() {
+	public void setClusterNumber() {
 		ExampleCluster.setClusterNumber(examples);
 	}
 }

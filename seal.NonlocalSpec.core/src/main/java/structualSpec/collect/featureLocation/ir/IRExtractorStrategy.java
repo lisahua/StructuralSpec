@@ -24,7 +24,6 @@ public abstract class IRExtractorStrategy {
 		if (!codeDir.isDirectory())
 			return null;
 		return codeDir.listFiles();
-
 	}
 
 	public abstract StringBuilder setFileString(CompilationUnit cu);

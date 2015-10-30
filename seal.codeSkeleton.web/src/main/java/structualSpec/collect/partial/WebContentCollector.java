@@ -3,8 +3,7 @@ package structualSpec.collect.partial;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
-
-import structualSpec.collect.featureLocation.QueryTermSubscriber;
+import structualSpec.collect.featureLocation.ir.QueryStemmer;
 import structualSpec.config.ConfigUtility;
 
 public class WebContentCollector {
@@ -21,7 +20,7 @@ public class WebContentCollector {
 			url = new URL(query);
 			BufferedReader reader = new BufferedReader(new InputStreamReader(
 					url.openStream(), ConfigUtility.charset));
-			QueryTermSubscriber.getInstance().setQueryTerms(query);
+		
 			return JsonUnMarshaller.getInstance().readJsonQueryResult(reader);
 
 		} catch (Exception e) {
@@ -39,7 +38,7 @@ public class WebContentCollector {
 	}
 
 	public static JsonQueryResult[] queryForAllResults(String query) {
-		
+		query = QueryStemmer.stemming(query);
 		JsonQueryResult[] results = null;
 		JsonQueryResult first = sendQuery(query,ConfigUtility.language);
 		int totalPage = first.getTotal() / ConfigUtility.pageSize;

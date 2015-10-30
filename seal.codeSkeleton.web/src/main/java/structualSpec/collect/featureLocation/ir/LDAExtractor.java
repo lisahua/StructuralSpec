@@ -7,10 +7,12 @@ import java.io.PrintWriter;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.TreeSet;
 import java.util.regex.Pattern;
 
-import structualSpec.config.ConfigUtility;
+import structualSpec.collect.partial.JsonSourceCode;
+import structualSpec.config.IRInformationModel;
 import cc.mallet.pipe.CharSequence2TokenSequence;
 import cc.mallet.pipe.CharSequenceLowercase;
 import cc.mallet.pipe.Pipe;
@@ -26,31 +28,37 @@ public class LDAExtractor {
 	private static int numTopics = 5;
 	private static ParallelTopicModel model;
 	private static Alphabet dataAlphabet;
-	private static File[] files = null;
+	private static List<JsonSourceCode> files = null;
 	private static int len = 0;
-
-	public static void extractTopics(StringBuilder[] corpus) throws Exception {
+	private static String ldaInput = "lda.csv";
+	private static int[][] topicDoc = null;
+	private static double[][] ldaMatrix = null;
+private static	String[] topicWord =null;
+	public static int[][] extractTopics(StringBuilder[] corpus)
+			throws Exception {
 		InstanceList instances = initInstances(corpus);
-//		model = LDAConfigOptimize.optimizeConfig(instances);
+		// model = LDAConfigOptimize.optimizeConfig(instances);
 		model = LDAConfigOptimize.dummyOptimizeConfig(instances);
 		numTopics = model.numTopics;
 		// model.addInstances(instances);
 		// optimizeLDAModel();
 		dataAlphabet = instances.getDataAlphabet();
 		len = model.getData().size();
-		getLDAMatrix();
-		
+//		returnTopicWords(7);
+		return getTopics(getLDAMatrix());
 	}
 
 	private static void prepareCSVInput(StringBuilder[] corpus) {
 
 		try {
-			files = new File(ConfigUtility.codeOutputPath).listFiles();
-			PrintWriter writer = new PrintWriter(ConfigUtility.ldaInputFile);
+			// files = new File(ConfigUtility.codeOutputPath).listFiles();
+			files = IRInformationModel.getInstance().getFileInfo();
+
+			PrintWriter writer = new PrintWriter(ldaInput);
 			for (int i = 0; i < corpus.length; i++) {
 				StringBuilder builder = corpus[i];
-				writer.println(builder.toString() + ",," + files[i] + ","
-						+ builder.toString());
+				writer.println(builder.toString() + ",,"
+						+ files.get(i).getFileName() + "," + builder.toString());
 			}
 			writer.close();
 		} catch (Exception e) {
@@ -59,24 +67,28 @@ public class LDAExtractor {
 	}
 
 	public static double[][] getLDAMatrix() {
+		if (ldaMatrix != null)
+			return ldaMatrix;
+
 		double[][] ldaMatrix = new double[len][numTopics];
 		for (int i = 0; i < len; i++) {
 			double[] topicDistribution = model.getTopicProbabilities(i);
 			ldaMatrix[i] = topicDistribution;
 		}
 		// fancyPrint(ldaMatrix);
-//		int[] docPerTopic = getTopicDocuments(ldaMatrix);
+		// int[] docPerTopic = getTopicDocuments(ldaMatrix);
 		int[][] topicForDoc = getTopics(ldaMatrix);
-		
-		for (int t=0;t<numTopics;t++) {
-			String allFiles="";
-			int count =0;
-			for (int i=0;i<len-1;i++) {
-				if (topicForDoc[t][i]==0&& topicForDoc[t][i+1]==0) break;
-				allFiles += files[i].getName()+" "; 
+
+		for (int t = 0; t < numTopics; t++) {
+			String allFiles = "";
+			int count = 0;
+			for (int i = 0; i < len - 1; i++) {
+				if (topicForDoc[t][i] == 0 && topicForDoc[t][i + 1] == 0)
+					break;
+				allFiles += files.get(i).getFileName() + " ";
 				count++;
 			}
-			System.out.println("Topic " + t + ": " + count + " " + allFiles);
+			
 		}
 		return ldaMatrix;
 	}
@@ -99,14 +111,15 @@ public class LDAExtractor {
 					}
 				}
 			}
-			System.out.println(files[i].getName() + ":" + maxIndex + "(" + max
-					+ ") " + max2Index + "(" + max2 + ")");
+			System.out.println(files.get(i).getFileName() + ":" + maxIndex
+					+ "(" + max + ") " + max2Index + "(" + max2 + ")");
 		}
 	}
 
 	public static String[] returnTopicWords(int numWords) {
+		if (topicWord!=null) return topicWord;
 		ArrayList<TreeSet<IDSorter>> topicSortedWords = model.getSortedWords();
-		String[] topicWord = new String[numTopics];
+		 topicWord = new String[numTopics];
 		for (int topic = 0; topic < numTopics; topic++) {
 			Iterator<IDSorter> iterator = topicSortedWords.get(topic)
 					.iterator();
@@ -133,7 +146,7 @@ public class LDAExtractor {
 		pipeList.add(new TokenSequence2FeatureSequence());
 		InstanceList instances = new InstanceList(new SerialPipes(pipeList));
 		Reader fileReader = new InputStreamReader(new FileInputStream(new File(
-				ConfigUtility.ldaInputFile)), "UTF-8");
+				ldaInput)), "UTF-8");
 		instances.addThruPipe(new CsvIterator(fileReader, Pattern
 				.compile("^(\\S*)[\\s,]*(\\S*)[\\s,]*(.*)$"), 3, 2, 1));
 		return instances;
@@ -152,16 +165,30 @@ public class LDAExtractor {
 		return fileTopics;
 	}
 
-	public static int[][]  getTopics(double[][] matrix) {
-		int[][] topicDoc = new int[numTopics][len];
+	public static int[][] getTopics(double[][] matrix) {
+		if (topicDoc != null)
+			return topicDoc;
+		topicDoc = new int[numTopics][len];
 		int[] fileTopics = getTopicDocuments(matrix);
 		int[] lastId = new int[numTopics];
-		for (int i=0;i<fileTopics.length;i++) {
+		for (int i = 0; i < fileTopics.length; i++) {
 			int topic = fileTopics[i];
 			topicDoc[topic][lastId[topic]] = i;
-			lastId[topic] = lastId[topic] +1;
+			lastId[topic] = lastId[topic] + 1;
 		}
-		
+		for (int i=0;i<numTopics;i++) {
+			System.out.print("Topic "+i+": ");
+			for (int j=0;j<lastId[i];j++) {
+				System.out.print(files.get(topicDoc[i][j]).getFileName());
+			}
+			System.out.println();
+		}
 		return topicDoc;
 	}
+
+	public static  int[] getTopicFiles(int topicNum) {
+		return topicDoc[topicNum];
+
+	}
+
 }

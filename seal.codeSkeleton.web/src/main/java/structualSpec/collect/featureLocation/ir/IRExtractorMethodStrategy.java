@@ -15,6 +15,7 @@ public class IRExtractorMethodStrategy extends IRExtractorStrategy {
 	@Override
 	public StringBuilder setFileString(CompilationUnit cu) {
 		IRMethodVisitor extractor = new IRMethodVisitor();
+		
 		cu.accept(extractor);
 		return extractor.getString();
 	}
@@ -45,6 +46,6 @@ public class IRExtractorMethodStrategy extends IRExtractorStrategy {
 		}
 	}
 
-	
+
 
 }

@@ -7,8 +7,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import structualSpec.collect.featureLocation.QueryTermSubscriber;
 import structualSpec.config.ConfigUtility;
+import structualSpec.config.IRInformationModel;
 
 public class LSIExtractor {
 	private HashMap<String, Integer> totalTerms;
@@ -43,7 +43,7 @@ public class LSIExtractor {
 	}
 
 	private double[] matchQuery() {
-		String[] terms = QueryTermSubscriber.getInstance().getTerms();
+		String[] terms = IRInformationModel.getInstance().getTerms();
 		HashSet<String> included = new HashSet<String>();
 		for (String term : terms) {
 			term = term.toLowerCase().trim();

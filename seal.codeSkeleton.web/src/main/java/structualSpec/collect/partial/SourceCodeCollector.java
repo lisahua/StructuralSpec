@@ -7,14 +7,16 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URL;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 import org.apache.commons.io.FileUtils;
 
 import structualSpec.config.ConfigUtility;
+import structualSpec.config.IRInformationModel;
 
 public class SourceCodeCollector {
 	// private static SourceCodeCollector collector = new SourceCodeCollector();
@@ -58,26 +60,25 @@ public class SourceCodeCollector {
 			FileUtils.cleanDirectory(new File(ConfigUtility.codeOutputPath));
 		} catch (IOException e) {
 		}
-		Queue<JsonSourceCode> codeQueue = filterIdenticalFiles(result);
+		List<JsonSourceCode> codeQueue = filterIdenticalFiles(result);
 		int count = 0;
 		for (JsonSourceCode code : codeQueue)
 			writeDownFile(code, count++);
 	}
 
-	public static Queue<String> getStringsFromQuery(JsonQueryResult[] result) {
-		Queue<JsonSourceCode> queue = filterIdenticalFiles(result);
-		Queue<String> resultString = new LinkedList<String>();
+	public static void getStringsFromQuery(JsonQueryResult[] result) {
+		List<JsonSourceCode> queue = filterIdenticalFiles(result);
 		for (JsonSourceCode item : queue) {
 			JsonCode code = sendQuery(String.valueOf(item.getId()));
-			resultString.add(code.getCode());
+			item.setCode(code.getCode());
 		}
-		return resultString;
+		IRInformationModel.getInstance().setFileInfo(queue);
 	}
 
-	public static Queue<JsonSourceCode> filterIdenticalFiles(
+	public static List<JsonSourceCode> filterIdenticalFiles(
 			JsonQueryResult[] result) {
 		HashSet<String> nameSet = new HashSet<String>();
-		Queue<JsonSourceCode> itemQueue = new LinkedList<JsonSourceCode>();
+		List<JsonSourceCode> itemQueue = new ArrayList<JsonSourceCode>();
 		int totalLOC = 0;
 		for (JsonQueryResult qRes : result) {
 			if (qRes == null)
@@ -97,9 +98,11 @@ public class SourceCodeCollector {
 			// System.out.println("  & " + result[0].getTotal() + " & "
 			// + itemQueue.size() + "&" + totalLOC / itemQueue.size()
 			// + "&" + WebQueryTimer.end());
-			System.out.println("  & " + +itemQueue.size() + "&"
-					+ WebQueryTimer.end() + "&" + totalLOC / itemQueue.size()
-					+ " & 7 &" + totalLOC / itemQueue.size() / 10 + " & 7 \\\\");
+			System.out
+					.println("  & " + +itemQueue.size() + "&"
+							+ WebQueryTimer.end() + "&" + totalLOC
+							/ itemQueue.size() + " & 7 &" + totalLOC
+							/ itemQueue.size() / 10 + " & 7 \\\\");
 		return itemQueue;
 	}
 }

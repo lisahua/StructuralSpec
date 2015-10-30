@@ -35,11 +35,10 @@
 			</button>
 		</div>
 		<form class="navbar-form navbar-left" role="search" id="top-search"
-			action="/">
+			action="userQuery" method="POST">
 			<div class="input-group">
-				<input name="q" type="text" class="form-control"
-					placeholder="Type a code snippet or function"
-					value="undo redo texteditor"> <span class="input-group-btn">
+				<input name="query" type="text" class="form-control" value="">
+				<span class="input-group-btn">
 					<button type="submit" class="btn btn-primary">search</button>
 				</span>
 			</div>
@@ -72,42 +71,17 @@
 	<div class="common enterprise">
 		<h2>Java</h2>
 		<pre>
-			<code class="java">/**
- * @author John Smith &lt;john.smith@example.com&gt;
- * @version 1.0
-*/
-package l2f.gameserver.model;
-
-import java.util.ArrayList;
-
-public abstract class L2Character extends L2Object {
-  public static final Short ABNORMAL_EFFECT_BLEEDING = 0x0_0_0_1; // not sure
-
-  public void moveTo(int x, int y, int z) {
-    _ai = null;
-    _log.warning(&quot;Should not be called&quot;);
-    if (1 &gt; 5) {
-      return;
-    }
-  }
-
-  /** Task of AI notification */
-  @SuppressWarnings( { &quot;nls&quot;, &quot;unqualified-field-access&quot;, &quot;boxing&quot; })
-  public class NotifyAITask implements Runnable {
-    private final CtrlEvent _evt;
-
-    List&lt;String&gt; mList = new ArrayList&lt;String&gt;()
-
-    public void run() {
-      try {
-        getAI().notifyEvent(_evt, _evt.class, null);
-      } catch (Throwable t) {
-        t.printStackTrace();
-      }
-    }
-  }
+			
+<%
+				if (request.getAttribute("code") == null)
+					return;
+String[] list = (String[]) request.getAttribute("code");
+for (String code : list) {
+%>
+<code class="java"> <% out.print(code); %> </code>
+<%
 }
-</code>
+%>
 		</pre>
 	</div>
 

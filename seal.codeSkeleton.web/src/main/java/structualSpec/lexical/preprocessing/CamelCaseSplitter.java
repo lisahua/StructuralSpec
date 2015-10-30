@@ -40,10 +40,10 @@ public class CamelCaseSplitter {
 	}
 	
 	public String executeSingleLine(String line) {
-		String[] tokens = line.toLowerCase().split(" ");
+		String[] tokens = line.split(" ");
 		String output = "";
 		for (String token: tokens) {
-			output += executeSingleName(token)+" "; 
+			output += splitSingleName(token)+" "; 
 		}
 		return output;
 	}

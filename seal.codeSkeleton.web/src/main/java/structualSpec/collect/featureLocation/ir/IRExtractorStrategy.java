@@ -2,13 +2,16 @@ package structualSpec.collect.featureLocation.ir;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import org.apache.commons.io.FileUtils;
 import org.eclipse.jdt.core.dom.AST;
 import org.eclipse.jdt.core.dom.ASTParser;
 import org.eclipse.jdt.core.dom.CompilationUnit;
 
+import structualSpec.collect.partial.JsonSourceCode;
 import structualSpec.config.ConfigUtility;
+import structualSpec.config.IRInformationModel;
 
 public abstract class IRExtractorStrategy {
 
@@ -39,6 +42,16 @@ public abstract class IRExtractorStrategy {
 		return sbList;
 	}
 
+	public StringBuilder[] retrieveAllIRInfo() {
+		List<JsonSourceCode> corpus = IRInformationModel.getInstance()
+				.getFileInfo();
+		int len = corpus.size();
+		StringBuilder[] sbList = new StringBuilder[len];
+		for (int i = 0; i < len; i++)
+			sbList[i] = setFileString(corpus.get(i).getCode());
+		return sbList;
+	}
+
 	public StringBuilder setFileString(File code) {
 		String fileString = "";
 		try {
@@ -49,4 +62,7 @@ public abstract class IRExtractorStrategy {
 		return setFileString(retrieveCU(fileString));
 	}
 
+	public StringBuilder setFileString(String code) {
+		return setFileString(retrieveCU(code));
+	}
 }

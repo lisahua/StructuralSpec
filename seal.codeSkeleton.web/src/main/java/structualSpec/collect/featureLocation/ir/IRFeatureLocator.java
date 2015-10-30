@@ -6,12 +6,12 @@ import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import structualSpec.collect.featureLocation.FactObject;
 import structualSpec.collect.featureLocation.MethodNodeModel;
-import structualSpec.collect.featureLocation.QueryTermSubscriber;
 import structualSpec.collect.featureLocation.TypeNodeModel;
+import structualSpec.config.IRInformationModel;
 import structualSpec.syntactic.parser.MethodASTVisitor;
 
 public class IRFeatureLocator {
-	private static String[] queryTerms = QueryTermSubscriber.getInstance()
+	private static String[] queryTerms = IRInformationModel.getInstance()
 			.getTerms();
 
 	public static TypeNodeModel locateFeature(TypeDeclaration type) {
