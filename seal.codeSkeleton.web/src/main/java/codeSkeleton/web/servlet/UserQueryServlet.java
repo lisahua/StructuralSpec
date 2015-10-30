@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import structualSpec.main.MainEntrance;
+import codeSkeleton.core.main.MainEntrance;
 
 @SuppressWarnings("serial")
 @WebServlet("/userQuery")
@@ -19,8 +19,8 @@ public class UserQueryServlet extends HttpServlet {
 			throws ServletException, IOException {
 		String query = req.getParameter("query");
 		MainEntrance.run(query);
-		String[] topics = MainEntrance.getTopics(7);
-		String[] files = MainEntrance.getFiles(0, 2);
+		String[] topics = MainEntrance.getIRTopics(7);
+		String[] files = MainEntrance.getIRFiles(0, 2);
 		req.setAttribute("topics", topics);
 		req.setAttribute("code", files);
 		req.getRequestDispatcher("/index.jsp").forward(req, resp);
