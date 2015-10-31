@@ -10,6 +10,8 @@ public class TypeNodeModel {
 	private HashMap<String, String> nameType = new HashMap<String, String>();
 	private TypeDeclaration typeNode;
 	private HashSet<FactObject> fields = new HashSet<FactObject>();
+//	private HashMap<MethodNodeModel, HashSet<FactObject>> kwFacts = new HashMap<MethodNodeModel, HashSet<FactObject>>();
+private  int kwCount = 0;
 
 	public TypeNodeModel(TypeDeclaration type) {
 		typeNode = type;
@@ -17,11 +19,22 @@ public class TypeNodeModel {
 
 	public void insertFieldFacts(FactObject fact) {
 		fields.add(fact);
-		System.out.println(fact.getFact()+"("+fact+")");
+		kwCount += fact.numKeyword;
+//		System.out.println(fact.getFact() + "(" + fact + ")");
 	}
 
 	public void insertMethodFacts(MethodNodeModel mNode) {
 		methods.add(mNode);
+		kwCount += mNode.getNumKwFacts();
+//		for (FactObject fact : mNode.getFacts()) {
+//			HashSet<FactObject> set = new HashSet<FactObject>();
+//			if (fact.getNumKeyword() > 0) {
+//				set.add(fact);
+//			}
+//			if (set.size() > 0)
+//				kwFacts.put(mNode, set);
+//			
+//		}
 	}
 
 	public void insertSymbolTable(String name, String type) {
@@ -48,6 +61,12 @@ public class TypeNodeModel {
 		this.fields = fields;
 	}
 
-	
-	
+	public  int getKwCount() {
+		return kwCount;
+	}
+
+//	public HashMap<MethodNodeModel, HashSet<FactObject>> getKwFacts() {
+//		return kwFacts;
+//	}
+
 }

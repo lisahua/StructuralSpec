@@ -4,6 +4,7 @@ import codeSkeleton.core.collect.IRMainController;
 import codeSkeleton.core.collect.query.JsonQueryResult;
 import codeSkeleton.core.collect.query.SourceCodeCollector;
 import codeSkeleton.core.collect.query.WebContentCollector;
+import codeSkeleton.core.structural.StructuralMainController;
 
 public class MainEntrance {
 
@@ -11,7 +12,8 @@ public class MainEntrance {
 		JsonQueryResult[] result = WebContentCollector
 				.queryForAllResults(query);
 		SourceCodeCollector.getStringsFromQuery(result);
-		IRMainController.run();
+//		IRMainController.run();
+		StructuralMainController.run();
 	}
 
 	public static String[] getIRTopics(int numWords) {

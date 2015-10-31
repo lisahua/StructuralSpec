@@ -7,8 +7,10 @@ public class QueryStemmer {
 
 	// TODO more works
 	public static String stemming(String query) {
-		String line = splitter.executeSingleLine(query);
-		IRInformationModel.getInstance().setQueryTerms(line.split(" "));
+//		String line = splitter.executeSingleLine(query);
+//		IRInformationModel.getInstance().setQueryTerms(line.split(" "));
+//		String line = splitter.executeSingleLine(query);
+		IRInformationModel.getInstance().setQueryTerms(query.split(" "));
 		return query.replace(" ", "+");
 	}
 }

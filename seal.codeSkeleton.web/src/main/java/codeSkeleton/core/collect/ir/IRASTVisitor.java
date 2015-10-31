@@ -1,5 +1,7 @@
 package codeSkeleton.core.collect.ir;
 
+import java.util.HashSet;
+
 import org.eclipse.jdt.core.dom.ASTVisitor;
 import org.eclipse.jdt.core.dom.FieldDeclaration;
 import org.eclipse.jdt.core.dom.MethodDeclaration;
@@ -12,7 +14,7 @@ import codeSkeleton.core.lexical.preprocessing.CamelCaseSplitter;
 
 public class IRASTVisitor extends ASTVisitor {
 	StringBuilder builder = new StringBuilder();
-	String[] winnow = ConfigUtility.winnowKW;
+	HashSet<String> winnow = ConfigUtility.winnowKW;
 	CamelCaseSplitter splitter = CamelCaseSplitter.getInstance();
 
 	public boolean visit(TypeDeclaration type) {

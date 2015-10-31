@@ -44,8 +44,11 @@ public class VariableASTVisitor extends ASTVisitor {
 			return true;
 		String left = parseExpression(assign.getLeftHandSide()).toString();
 		String right = parseExpression(assign.getRightHandSide()).toString();
-		methodModel
-				.insertMethodFacts(new FactObject(FACT.accesses, left, right));
+		if (right.equals("null"))
+			methodModel.insertMethodFacts(new FactObject(FACT.accesses, left));
+		else
+			methodModel.insertMethodFacts(new FactObject(FACT.accesses, left,
+					right));
 		return true;
 	}
 
@@ -85,15 +88,21 @@ public class VariableASTVisitor extends ASTVisitor {
 	}
 
 	public boolean visit(SingleVariableDeclaration var) {
-		methodModel.insertMethodFacts(new FactObject(FACT.variable, var.getName().toString(),var.getType().toString()));
-		methodModel.insertSymbolTable(var.getName().toString(), var.getType().toString());
+		methodModel.insertMethodFacts(new FactObject(FACT.variable, var
+				.getName().toString(), var.getType().toString()));
+		methodModel.insertSymbolTable(var.getName().toString(), var.getType()
+				.toString());
 		return true;
 	}
+
 	public boolean visit(VariableDeclarationStatement var) {
-		//FIXME ugly code
+		// FIXME ugly code
 		String[] names = var.fragments().toString().split("=")[0].split(" ");
-		methodModel.insertMethodFacts(new FactObject(FACT.variable, names[names.length-1].replace("[",""), var.getType().toString()));
-//		methodModel.insertSymbolTable(var.getName().toString(), var.getType().toString());
+		methodModel.insertMethodFacts(new FactObject(FACT.variable,
+				names[names.length - 1].replace("[", ""), var.getType()
+						.toString()));
+		// methodModel.insertSymbolTable(var.getName().toString(),
+		// var.getType().toString());
 		return true;
 	}
 }

@@ -18,7 +18,7 @@ public class MethodASTVisitor extends ASTVisitor {
 	// private HashMap<String, String> nameType = new HashMap<String, String>();
 	// private ArrayList<FieldDeclaration> fields = new
 	// ArrayList<FieldDeclaration>();
-	//TODO symbol table not use
+	// TODO symbol table not use
 	TypeNodeModel typeModel;
 
 	public MethodASTVisitor(TypeDeclaration type) {
@@ -36,11 +36,13 @@ public class MethodASTVisitor extends ASTVisitor {
 			parameters += "_" + tokens[0];
 			methodModel.insertSymbolTable(tokens[1], tokens[0]);
 		}
+		Type returnType = mtd.getReturnType2();
 		methodModel.insertMethodFacts(new FactObject(FACT.method, mtd.getName()
-				.toString(), mtd.getName().toString() + parameters, mtd
-				.getReturnType2().toString()));
-		typeModel.insertSymbolTable(mtd.getName().toString(), mtd
-				.getReturnType2().toString());
+				.toString(), parameters,
+				(returnType == null) ? "" : returnType.toString()));
+		if (returnType != null)
+			typeModel.insertSymbolTable(mtd.getName().toString(), mtd
+					.getReturnType2().toString());
 		mtd.accept(new VariableASTVisitor(typeModel, methodModel));
 		typeModel.insertMethodFacts(methodModel);
 		return true;

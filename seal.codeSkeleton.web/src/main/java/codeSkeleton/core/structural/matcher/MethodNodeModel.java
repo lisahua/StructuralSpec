@@ -19,12 +19,13 @@ public class MethodNodeModel {
 	}
 
 	public void insertMethodFacts(FactObject fact) {
-		facts.add(fact);
+
+			facts.add(fact);
 		for (String term : terms) {
 			if (fact.toString().toLowerCase().contains(term.toLowerCase())) {
 				kwFacts++;
 				fact.setNumKeyword(1);
-				System.out.println(fact.getFact() + "(" + fact + ")");
+				// System.out.println(fact.getFact() + "(" + fact + ")");
 			}
 		}
 	}
