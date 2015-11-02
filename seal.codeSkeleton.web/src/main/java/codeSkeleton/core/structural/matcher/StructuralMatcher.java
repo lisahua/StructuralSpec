@@ -58,4 +58,12 @@ public class StructuralMatcher {
 		// }
 		return cClusters;
 	}
+
+	public CodeExampleModel getSingleExample(int i) {
+		return examples.get(i);
+	}
+
+	public int getExampleSize() {
+		return examples.size();
+	}
 }

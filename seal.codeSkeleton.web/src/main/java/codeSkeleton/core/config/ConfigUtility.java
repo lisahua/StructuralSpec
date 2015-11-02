@@ -7,6 +7,7 @@ public class ConfigUtility {
 
 	public static final int NUM_RESULT = 100;
 	public static final String codeSearchPortal = "https://searchcode.com/api/";
+	public static final String codeViewPortal = "https://searchcode.com/codesearch/view/";
 	public static final String queryAPI = codeSearchPortal + "codesearch_I/?q=";
 	public static final String codeQueryAPI = codeSearchPortal + "result/";
 	public static final String charset = "UTF-8";

@@ -7,8 +7,7 @@
 <meta name="description"
 	content="searchcode is a free source code and documentation search engine. API documentation, code snippets and open source (free sofware) repositories are indexed and searchable.">
 <link rel="shortcut icon" href="/static/favicon.ico" type="image/x-icon" />
-<title>Search for undo redo texteditor | source code search
-	engine</title>
+<title>Structured Code Search Engine</title>
 <link rel="stylesheet" href="css/default.min.css">
 <script src="js/highlight.min.js"></script>
 <script>
@@ -46,45 +45,24 @@
 
 	</nav>
 
-
-	<div class="container">
-		<div class="row">
-			<div class="col-md-10">
-				<h5>About 112 results</h5>
-				<div id="documentation-results"></div>
-				<div class="code-result" data-id="12191000">
-					<div>
-						<h5>
-							<a href="/codesearch/view/12191000/">TextEditor.java in
-								textmash</a> <small>
-								http://textmash.googlecode.com/svn/trunk/ | 1271 lines | Java</small> <small><a
-								href="#" class="view-similar-link hidden"></a></small>
-						</h5>
-					</div>
-					<ol class="code-result">
-						<li value="42"></li>
-					</ol>
-				</div>
-			</div>
+	<%
+		if (request.getAttribute("code") == null)
+			return;
+		String[][] examples = (String[][]) request.getAttribute("code");
+		for (int i = 0; i < examples.length; i++) {
+	%>
+	<div><h2>Cluster <%out.print(i); %></h2>
+		<div class="container" style="float: left; width: 700px;">
+			<%
+				out.print(examples[0][i]);
+			%>
+		</div>
+		<div class="container" style="float: right; width: 700px;">
+			<%
+				out.print(examples[1][i]);
+			%>
 		</div>
 	</div>
-	<div class="common enterprise">
-		<h2>Java</h2>
-		<pre>
-			
-<%
-				if (request.getAttribute("code") == null)
-					return;
-String[] list = (String[]) request.getAttribute("code");
-for (String code : list) {
-%>
-<code class="java"> <% out.print(code); %> </code>
-<%
-}
-%>
-		</pre>
-	</div>
-
-
+	<%} %>
 </body>
 </html>

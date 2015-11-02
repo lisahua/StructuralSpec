@@ -7,7 +7,7 @@ import codeSkeleton.core.config.ConfigUtility;
 public class FactObject {
 	ArrayList<String> property = new ArrayList<String>();
 	FACT fact;
-	int numKeyword = 0;
+boolean kw=false;
 	String s = "";
 
 	public FactObject(FACT fact, String... args) {
@@ -19,14 +19,16 @@ public class FactObject {
 			}
 		}
 	}
-
-	public int getNumKeyword() {
-		return numKeyword;
+	
+	public boolean isKw() {
+		return kw;
 	}
 
-	public void setNumKeyword(int numKeyword) {
-		this.numKeyword = numKeyword;
+
+	public void setKw(boolean kw) {
+		this.kw = kw;
 	}
+
 
 	public ArrayList<String> getProperty() {
 		return property;

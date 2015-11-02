@@ -1,7 +1,7 @@
 package codeSkeleton.core.structural.matcher;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 
@@ -9,24 +9,19 @@ import codeSkeleton.core.collect.IRInformationModel;
 
 public class MethodNodeModel {
 	private MethodDeclaration methodNode;
-	private HashSet<FactObject> facts = new HashSet<FactObject>();
+	private ArrayList<FactObject> facts = new ArrayList<FactObject>();
 	private HashMap<String, String> nameType = new HashMap<String, String>();
 	private int kwFacts = 0;
-	private String[] terms = IRInformationModel.getInstance().getTerms();
 
 	public MethodNodeModel(MethodDeclaration method) {
 		methodNode = method;
 	}
 
 	public void insertMethodFacts(FactObject fact) {
-
-			facts.add(fact);
-		for (String term : terms) {
-			if (fact.toString().toLowerCase().contains(term.toLowerCase())) {
-				kwFacts++;
-				fact.setNumKeyword(1);
-				// System.out.println(fact.getFact() + "(" + fact + ")");
-			}
+		facts.add(fact);
+		if (IRInformationModel.getInstance().hasKW(fact.toString())) {
+			kwFacts++;
+			fact.setKw(true);
 		}
 	}
 
@@ -46,7 +41,7 @@ public class MethodNodeModel {
 		this.kwFacts = kwFacts;
 	}
 
-	public HashSet<FactObject> getFacts() {
+	public ArrayList<FactObject> getFacts() {
 		return facts;
 	}
 

@@ -1,15 +1,18 @@
 package codeSkeleton.core.structural.matcher;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
+import codeSkeleton.core.collect.IRInformationModel;
+
 public class TypeNodeModel {
-	private HashSet<MethodNodeModel> methods = new HashSet<MethodNodeModel>();
+	private ArrayList<MethodNodeModel> methods = new ArrayList<MethodNodeModel>();
 	private HashMap<String, String> nameType = new HashMap<String, String>();
 	private TypeDeclaration typeNode;
-	private HashSet<FactObject> fields = new HashSet<FactObject>();
+	private ArrayList<FactObject> fields = new ArrayList<FactObject>();
 //	private HashMap<MethodNodeModel, HashSet<FactObject>> kwFacts = new HashMap<MethodNodeModel, HashSet<FactObject>>();
 private  int kwCount = 0;
 
@@ -19,8 +22,10 @@ private  int kwCount = 0;
 
 	public void insertFieldFacts(FactObject fact) {
 		fields.add(fact);
-		kwCount += fact.numKeyword;
-//		System.out.println(fact.getFact() + "(" + fact + ")");
+		if (IRInformationModel.getInstance().hasKW(fact.toString())) {
+			kwCount++;
+			fact.setKw(true);
+		}
 	}
 
 	public void insertMethodFacts(MethodNodeModel mNode) {
@@ -41,7 +46,7 @@ private  int kwCount = 0;
 		nameType.put(name, type);
 	}
 
-	public HashSet<MethodNodeModel> getMethods() {
+	public ArrayList<MethodNodeModel> getMethods() {
 		return methods;
 	}
 
@@ -53,11 +58,11 @@ private  int kwCount = 0;
 		return typeNode;
 	}
 
-	public HashSet<FactObject> getFields() {
+	public ArrayList<FactObject> getFields() {
 		return fields;
 	}
 
-	public void setFields(HashSet<FactObject> fields) {
+	public void setFields(ArrayList<FactObject> fields) {
 		this.fields = fields;
 	}
 

@@ -1,6 +1,6 @@
 package codeSkeleton.core.collect.ir;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 
 import org.eclipse.jdt.core.dom.TypeDeclaration;
 
@@ -17,13 +17,13 @@ public class IRFeatureLocator {
 	public static TypeNodeModel locateFeature(TypeDeclaration type) {
 		MethodASTVisitor mtdVisitor = new MethodASTVisitor(type);
 		type.accept(mtdVisitor);
-		
+
 		return markKWFacts(mtdVisitor.getTypeNodeModel());
 	}
 
 	private static TypeNodeModel markKWFacts(TypeNodeModel typeModel) {
 		for (MethodNodeModel model : typeModel.getMethods()) {
-			HashSet<FactObject> facts = model.getFacts();
+			ArrayList<FactObject> facts = model.getFacts();
 			for (FactObject fact : facts) {
 				setScore(fact);
 			}
@@ -41,6 +41,7 @@ public class IRFeatureLocator {
 			fS = fS.replace(term, "");
 			count += (size - fS.length()) / term.length();
 		}
-		fact.setNumKeyword(count);
+		if (count > 0)
+			fact.setKw(true);
 	}
 }
