@@ -1,6 +1,6 @@
 package codeSkeleton.core.structural.output;
 
-public class LineMarkerModel {
+public class LineMarkerModel implements Comparable<LineMarkerModel>{
 	private int lineNo;
 	private LineType type;
 	private boolean hasKW;
@@ -47,10 +47,15 @@ public class LineMarkerModel {
 
 	public String toString() {
 		String lineS = " <li value=\"" + lineNo + "\">  <pre>";
-		if (hasKW)
-			lineS += "<strong>" + line + "</strong>";
-		else
+//		if (hasKW)
+//			lineS += "<strong>" + line + "</strong>";
+//		else
 			lineS += line;
 		return lineS + "</pre></li>";
 	}
+
+	public int compareTo(LineMarkerModel o) {
+		return lineNo-o.lineNo;
+	}
+	
 }

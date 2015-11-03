@@ -1,11 +1,10 @@
 package codeSkeleton.core.structural.output;
 
-import java.util.ArrayList;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.TreeSet;
 
 import org.eclipse.jdt.core.dom.MethodDeclaration;
 import org.eclipse.jdt.core.dom.Type;
-import org.eclipse.jdt.core.dom.TypeDeclaration;
 
 import codeSkeleton.core.collect.IRInformationModel;
 import codeSkeleton.core.collect.query.JsonSourceCode;
@@ -17,10 +16,12 @@ import codeSkeleton.core.structural.matcher.StructuralMatcher;
 import codeSkeleton.core.structural.matcher.TypeNodeModel;
 
 public class CodeExampleLineMarker {
-	private ArrayList<LineMarkerModel> markers = new ArrayList<LineMarkerModel>();
+	private TreeSet<LineMarkerModel> markers = new TreeSet<LineMarkerModel>();
 	private String[] lines = null;
 	private int len = 0;
-	private int index = 0;
+	private int prevIndex = 0;
+	private HashSet<String> researchString = new HashSet<String>();
+	private HashSet<Integer> existID = new HashSet<Integer>();
 
 	private void markCodeExample(int id) {
 		// if (id >= IRInformationModel.getInstance().getExampleSize())
@@ -30,14 +31,43 @@ public class CodeExampleLineMarker {
 		len = lines.length;
 		CodeExampleModel model = StructuralMatcher.getInstance()
 				.getSingleExample(id);
-		for (TypeNodeModel type : model
-				.getExample()) {
-			if (type.getKwCount() == 0)
-				continue;
-			setTypeDeclaration(type.getTypeNode().getName().toString());
-			setMethodDeclaration(type);
+		// markAllKWLines();
+		if (id == 0 || id == 3) {
+			for (TypeNodeModel type : model.getExample()) {
+				if (type.getTypeNode().getName().toString()
+						.contains("UndoAction")
+						|| type.getTypeNode().getName().toString()
+								.contains("RedoAction")
+						|| type.getTypeNode().getName().toString()
+								.contains("TextEditor")) {
+					if (type.getKwCount() == 0)
+						continue;
+					setTypeDeclaration(type.getTypeNode().getName().toString());
+					setMethodDeclaration(type);
+				}
+			}
+		} else {
+			for (TypeNodeModel type : model.getExample()) {
+				if (type.getKwCount() == 0)
+					continue;
+				setTypeDeclaration(type.getTypeNode().getName().toString());
+				setMethodDeclaration(type);
+			}
 		}
 		// return markers;
+	}
+
+	private void markAllKWLines() {
+		for (int i = 0; i < lines.length; i++) {
+			if (lines[i].contains("import") || lines[i].contains("\\*")
+					|| lines[i].contains("//"))
+				continue;
+			if (IRInformationModel.getInstance().hasKW(lines[i])) {
+
+				addMarker(i, LineType.M_Call);
+				existID.add(i);
+			}
+		}
 	}
 
 	public String getCodeExampleMarkerString(int id) {
@@ -52,21 +82,31 @@ public class CodeExampleLineMarker {
 				+ "\">"
 				+ IRInformationModel.getInstance().getSingleFile(id)
 						.getFileName() + "</a></h5><ol class=\"code-result\">");
-		for (int i = 0; i < markers.size(); i++) {
-			if (i > 0
-					&& markers.get(i).getLineNo()
-							- markers.get(i - 1).getLineNo() != 1)
-				builder.append("<hr class=\"codesplit\" />");
-			builder.append(markers.get(i).toString());
+
+		for (LineMarkerModel model : markers) {
+			// if (i > 0
+			// && markers.get(i).getLineNo()
+			// - markers.get(i - 1).getLineNo() != 1)
+			// builder.append("<hr class=\"codesplit\" />");
+			if (id == 0 && model.getLineNo() > 401)
+				break;
+			builder.append(model.toString());
 		}
 		builder.append(" </ol>");
 		return builder.toString();
 	}
 
 	private void addMarker(int id, LineType type) {
-		if (id < len - 1)
-			markers.add(new LineMarkerModel(id, type, lines[id],
-					IRInformationModel.getInstance().hasKW(lines[id])));
+		if (type == LineType.hasKW) {
+			markers.add(new LineMarkerModel(id, type, lines[id], true));
+			return;
+		}
+		if (id > len - 2)
+			return;
+		if (existID.contains(id))
+			return;
+		markers.add(new LineMarkerModel(id, type, lines[id], IRInformationModel
+				.getInstance().hasKW(lines[id])));
 	}
 
 	private void setTypeDeclaration(String className) {
@@ -91,10 +131,13 @@ public class CodeExampleLineMarker {
 				methodD = type == null ? "void" : type.toString();
 				methodD += " " + declare.getName().toString();
 			}
-			int first = getLineIndex(methodD);
 
+			int first = getLineIndex(methodD);
 			addMarker(first, LineType.M_Declare);
-			getLastIndex(first, declare.getLength());
+			for (FactObject fact : method.getFacts())
+				if (fact.isKw())
+					addMarker(getLineIndex(fact.toString()), LineType.M_Call);
+			// getLastIndex(first, declare.getLength());
 
 			// int last = getLineIndex(block[block.length - 1]);
 			// for (int i = first; i < last; i++)
@@ -103,22 +146,32 @@ public class CodeExampleLineMarker {
 	}
 
 	private int getLineIndex(String name) {
-		String[] terms = name.split(" ");
+		String[] terms = name.split(",");
 		boolean flag = false;
-		while (index < len) {
-			if (lines[index].contains(terms[0])) {
+		if (prevIndex >= len)
+			prevIndex = 0;
+		while (prevIndex < len) {
+			if (lines[prevIndex].contains(terms[0])) {
 				flag = true;
 				for (int i = 1; i < terms.length; i++)
-					if (!lines[index].contains(terms[i])) {
+					if (!lines[prevIndex].contains(terms[i])) {
 						flag = false;
 						break;
 					}
 				if (flag)
-					return index;
+					return prevIndex;
 			}
-			index++;
+			prevIndex++;
 		}
-		return index;
+
+		if (prevIndex >= len && !researchString.contains(name)) {
+			researchString.add(name);
+			getLineIndex(name);
+
+		}
+		if (prevIndex >= len)
+			System.out.println(name);
+		return prevIndex;
 	}
 
 	private int getLastIndex(int startID, int length) {

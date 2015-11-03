@@ -6,6 +6,7 @@ import codeSkeleton.core.collect.IRMainController;
 import codeSkeleton.core.collect.query.JsonQueryResult;
 import codeSkeleton.core.collect.query.SourceCodeCollector;
 import codeSkeleton.core.collect.query.WebContentCollector;
+import codeSkeleton.core.demo.Demo1;
 import codeSkeleton.core.structural.StructuralMainController;
 
 public class MainEntrance {
@@ -16,10 +17,12 @@ public class MainEntrance {
 		SourceCodeCollector.getStringsFromQuery(result);
 		// IRMainController.run();
 		StructuralMainController.run();
+		
 	}
 
 	public static String[] getIRTopics(int numWords) {
 		return IRMainController.getTopics(numWords);
+//		return new Demo1().printString();
 	}
 
 	public static String[] getIRFiles(int topicNum, int showNum) {

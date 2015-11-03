@@ -48,10 +48,17 @@
 	<%
 		if (request.getAttribute("code") == null)
 			return;
-		String[][] examples = (String[][]) request.getAttribute("code");
-		for (int i = 0; i < examples.length; i++) {
+		//String[] examples = (String[]) request.getAttribute("code");
+			String[][] examples = (String[][]) request.getAttribute("code");
+			for (int i = 0; i < examples[0].length; i++) {
 	%>
-	<div><h2>Cluster <%out.print(i); %></h2>
+	<div style="height: 1000px; overflow-y: scroll;">
+		<h2>
+			Cluster
+			<%
+			out.print(i+1);
+		%>
+		</h2>
 		<div class="container" style="float: left; width: 700px;">
 			<%
 				out.print(examples[0][i]);
@@ -59,10 +66,14 @@
 		</div>
 		<div class="container" style="float: right; width: 700px;">
 			<%
-				out.print(examples[1][i]);
+			out.print(examples[1][i]);
 			%>
+
 		</div>
 	</div>
-	<%} %>
+
+	<%
+		}
+	%>
 </body>
 </html>

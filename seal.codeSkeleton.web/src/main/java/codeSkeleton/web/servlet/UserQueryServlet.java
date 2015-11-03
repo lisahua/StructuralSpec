@@ -23,6 +23,7 @@ public class UserQueryServlet extends HttpServlet {
 //		req.setAttribute("topics", topics);
 //		req.setAttribute("code", files);
 		req.setAttribute("code", MainEntrance.getStructuralCode());
+//		req.setAttribute("code", MainEntrance.getIRTopics(0));
 		req.getRequestDispatcher("/index.jsp").forward(req, resp);
 	}
 }
