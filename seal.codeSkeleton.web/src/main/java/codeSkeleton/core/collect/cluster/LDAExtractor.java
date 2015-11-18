@@ -37,11 +37,11 @@ private static	String[] topicWord =null;
 	public static int[][] extractTopics(StringBuilder[] corpus)
 			throws Exception {
 		InstanceList instances = initInstances(corpus);
-		// model = LDAConfigOptimize.optimizeConfig(instances);
+		 model = LDAConfigOptimize.optimizeConfig(instances);
 		model = LDAConfigOptimize.dummyOptimizeConfig(instances);
 		numTopics = model.numTopics;
 		// model.addInstances(instances);
-		// optimizeLDAModel();
+//		 optimizeLDAModel();
 		dataAlphabet = instances.getDataAlphabet();
 		len = model.getData().size();
 //		returnTopicWords(7);

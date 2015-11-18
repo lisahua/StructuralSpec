@@ -52,6 +52,7 @@ public class CodeExampleLineMarker {
 					continue;
 				setTypeDeclaration(type.getTypeNode().getName().toString());
 				setMethodDeclaration(type);
+				markAllKWLines();
 			}
 		}
 		// return markers;
@@ -59,7 +60,7 @@ public class CodeExampleLineMarker {
 
 	private void markAllKWLines() {
 		for (int i = 0; i < lines.length; i++) {
-			if (lines[i].contains("import") || lines[i].contains("\\*")
+			if (lines[i].contains("import") || lines[i].contains("*")
 					|| lines[i].contains("//"))
 				continue;
 			if (IRInformationModel.getInstance().hasKW(lines[i])) {
