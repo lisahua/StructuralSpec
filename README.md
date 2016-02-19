@@ -1,40 +1,12 @@
 # StructuralSpec
 
-## Retrieve large dataset from Github
+Given a code search query for a task, such as ‘add undo and redo actions in my Graphics Editor’, this tool queries code search engine, identifies common API calls that provide main feature across different partial program examples, and helps complete this code reuse task based on the  target context.
+ 
+## Problem
+Developers frequently use source code examples as the basis for interacting with an application programming interface (API) to obtain the needed functionality. In this case, the source code example serves as the explicit origin for a reuse task which transforms a sequence of APIs with corresponding control structure to the target context. During the process of reuse task such as ‘add undo and redo actions in my Graphics Editor’, developers often query for a set of examples considering the task, and integrate examples that match the task into their system.
 
-###Install wget 
-If  
-```
-brew install wget
-``` 
+Both location and integration of reusable examples are not trivial. For the phase of location, existing tools that search for specific API usage examples might not be able to support such reuse tasks that always involve in multiple classes and related methods. As a result, developers always query general search engines like Google or expert sites like StackOverflow to investigate potential tutorials for desired features. These search engines will return a list of informal documentations and users have to search for source code elements in these resources. Although some linking recovery tools can help identify a partial pro- gram in the form of code snippet, they are not sufficient to create a pragmatic reuse plan as the main functionality is always interleaving with auxiliary ones and it is unlikely to find a ‘perfect’ example that provides all desired features for the reuse task. Considering that a single example is not enough for a given task, developers need to investigate multiple example variants manually for the desired features (i.e., common API calls). For the phase of integration, developers should not only measure structural and semantic similarity between the example and target context for the main API calls that provide desired features, but also determine which unnecessary code should be eliminated to save maintenance cost and which related elements should be transformed with structural correspondence to the target context. Unfortunately, for any selected example in non-trivial system, the number of structural dependencies to follow is much too large to be completely covered by developers. The partial programs extracted from the location phase make it even harder to tease out irrelevant elements without knowing a full scenario of precise type in- formation and method implementation details. Moreover, the location and integration phase can be iterative as there is no guarantee that a selected example will be appropriate until the integration results are examined.
 
-does not work, try http://osxdaily.com/2012/05/22/install-wget-mac-os-x/
-
-### Retrieve all matching projects via Github Archive API
-Example: due to the [pagination limits of github search](https://developer.github.com/guides/traversing-with-pagination/), we use query followed by page number to retrieve the entire dataset.
-
-```
-wget "https://api.github.com/search/repositories?q=language:Java+stars:>2&sort=stars&order=desc&page=58"
-```
-
-Organization: user:<org>
-Language: language:<language>
-
-More information:
-https://www.githubarchive.org
-https://developer.github.com/v3/search/
-
-### Parse json object and retrieve all project data
-
-python parseGithubJson.py <repo.json> <output.sh>
-sh <output.sh>
-
-#### Remove all un-Java files
-```
-find  . -type f ! -name "*.java" -delete
-```
-
-
-
+To overcome these challenges, we propose to automatically identify common API calls that provide the main feature across different partial program examples from informal documentation, and integrate this reusable example to the target context with a set of related elements that are necessary to implement the main feature. We assume that the overlapping API calls are the main features that the user intends to reuse based on the user query, and the related elements should be transformed to the target together with main features if they are data dependent and control de- pendent on the common functionalities in a common way across different examples. Figure 1 illustrates the process of our system. Given a free-form query from users, our tool invokes search engine (e.g., Google) to obtain a list of partial programs by recovering links between code elements and informal resources, clusters these examples and extracts com- mon structural facts (e.g., jQuery logical facts) with corresponding control structures for each cluster, identifies a set of related elements that interact with main elements in a common way, constructs reuse task with both main elements and related elements and ranks them based on user’s context, and finally integrates the reuse task selected by users to the target context.
 
 
