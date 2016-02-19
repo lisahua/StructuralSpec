@@ -1,4 +1,4 @@
-# StructuralSpec
+# Clustering and Structuring Code Examples
 
 Given a code search query for a task, such as ‘add undo and redo actions in my Graphics Editor’, this tool queries code search engine, identifies common API calls that provide main feature across different partial program examples, and helps complete this code reuse task based on the  target context.
  
